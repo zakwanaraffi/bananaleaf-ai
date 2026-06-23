@@ -21,7 +21,10 @@ WORKDIR $HOME/app
 
 # Salin requirements.txt terlebih dahulu agar Docker caching berjalan efisien
 COPY --chown=user backend/requirements.txt $HOME/app/backend/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r $HOME/app/backend/requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir "numpy<2.0" && \
+    pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
+    pip install --no-cache-dir -r $HOME/app/backend/requirements.txt
 
 # Salin semua file kode (TANPA file .pt - akan didownload di bawah)
 COPY --chown=user . $HOME/app
