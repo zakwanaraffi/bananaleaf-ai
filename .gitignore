@@ -41,4 +41,4 @@ saved_images/
 # macOS
 .DS_Store
 **/.DS_Store
-backend/models/*.pt
+*.pt
