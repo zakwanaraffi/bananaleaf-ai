@@ -24,9 +24,9 @@ env/
 *.log
 backend.log
 
-# Database (biarkan history.db tetap ada di repo sebagai db awal)
-# Tapi jangan track perubahan di dalamnya
-# backend/history.db
+# Database
+backend/history.db
+backend/database/
 
 # Upload & saved images (jangan push ke GitHub)
 backend/uploads/
