@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riwayat — Banana Leaf AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="stylesheet" href="css/history.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="logo" href="/">
+    <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
+      <circle cx="18" cy="18" r="17" fill="#eef5ee" stroke="#5cb85c" stroke-width="1.5"/>
+      <path d="M18 6 C28 10 30 22 18 30 C6 22 8 10 18 6Z" fill="#5cb85c" opacity="0.85"/>
+      <path d="M18 6 L18 30" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+      <path d="M18 13 C22 13 24 16 18 18" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+      <path d="M18 20 C22 20 24 23 18 25" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+      <circle cx="26" cy="10" r="4" fill="#e8b84b"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">Banana Leaf AI</span>
+      <span class="logo-tagline">Disease Detection</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <a href="/detect" class="nav-icon-btn" aria-label="Halaman Deteksi">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </a>
+    <button id="modeBtn" class="toggle-btn" aria-label="Toggle dark mode"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-title-row">
+    <div>
+      <h1 class="page-title">Riwayat <span>Deteksi</span></h1>
+      <p class="page-subtitle">Klik kartu untuk melihat detail &amp; download</p>
+    </div>
+    <div class="total-badge" id="totalBadge">— data</div>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card"><div class="stat-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div><div class="stat-value" id="statH">–</div><div class="stat-label">Sehat</div></div></div>
+  <div class="stat-card"><div class="stat-icon yellow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c49a30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><div class="stat-value" id="statS">–</div><div class="stat-label">Penyakit</div></div></div>
+  <div class="stat-card"><div class="stat-icon red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div><div class="stat-value" id="statA">–</div><div class="stat-label">Avg. Conf.</div></div></div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Cari nama..." oninput="filterData()">
+  </div>
+  <select class="filter-select" id="filterClass" onchange="filterData()">
+    <option value="">Semua</option>
+    <option value="healthy">Healthy</option>
+    <option value="sigatoka">Sigatoka</option>
+    <option value="leafspot">Leaf Spot</option>
+    <option value="unknown">Unknown</option>
+  </select>
+  <button class="sort-btn" id="sortBtn" onclick="toggleSort()">↓ Terbaru</button>
+</div>
+
+<div class="list-wrap" id="list">
+  <div class="skeleton-card" id="sk1"><div class="skel sk-av"></div><div class="sk-body"><div class="skel sk-t"></div><div class="skel sk-s"></div></div><div class="skel sk-r"></div></div>
+  <div class="skeleton-card" id="sk2"><div class="skel sk-av"></div><div class="sk-body"><div class="skel sk-t"></div><div class="skel sk-s"></div></div><div class="skel sk-r"></div></div>
+  <div class="skeleton-card" id="sk3"><div class="skel sk-av"></div><div class="sk-body"><div class="skel sk-t"></div><div class="skel sk-s"></div></div><div class="skel sk-r"></div></div>
+</div>
+<div class="empty-state" id="emptyState"><div class="empty-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><h3>Belum Ada Data</h3><p>Hasil deteksi yang disimpan akan muncul di sini.</p></div>
+
+<!-- OVERLAY -->
+<div class="overlay-bg" id="overlayBg">
+  <!-- DETAIL -->
+  <div class="detail-modal" id="detailPanel">
+    <div class="sheet-handle"></div>
+    <div class="d-img-wrap">
+      <div class="d-no-img" id="dNoImg"><div class="d-no-img-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><span style="font-size:13px">Tidak ada gambar</span></div>
+      <img id="dImg" class="d-img" src="" alt="" style="display:none">
+      <button class="d-close-btn" id="dCloseBtn">✕</button>
+      <span class="d-badge-float" id="dBadge"></span>
+    </div>
+    <div class="d-body">
+      <div class="d-name" id="dName">—</div>
+      <div class="d-date" id="dDate">—</div>
+      <div class="d-conf-row">
+        <div class="d-big-ring">
+          <svg width="72" height="72" viewBox="0 0 72 72">
+            <circle class="dr-bg" cx="36" cy="36" r="29"/>
+            <circle class="dr-fill" id="dRingFill" cx="36" cy="36" r="29" stroke-dasharray="182.21" stroke-dashoffset="182.21"/>
+          </svg>
+          <div class="dr-center"><span class="dr-pct" id="dPct">—</span><span class="dr-lbl">conf.</span></div>
+        </div>
+        <div class="d-conf-text">
+          <h4 id="dClass">—</h4>
+          <p>Tingkat keyakinan model AI terhadap hasil klasifikasi ini.</p>
+        </div>
+      </div>
+      <div class="d-solution"><div class="d-sol-lbl">Rekomendasi Solusi</div><div class="d-sol-text" id="dSol">—</div></div>
+      <div class="d-actions">
+        <button class="btn-d-dl" id="btnDownload"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Unduh</button>
+        <button class="btn-d-del" id="btnDetailDel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Hapus</button>
+        <button class="btn-d-close" id="dCloseBtn2">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM -->
+  <div class="confirm-box" id="confirmPanel" style="display:none">
+    <div class="conf-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></div>
+    <h3>Hapus Data?</h3>
+    <p id="confirmText">Data ini akan dihapus permanen.</p>
+    <div class="c-actions">
+      <button class="btn-c-cancel" id="btnCancelDel">Batal</button>
+      <button class="btn-c-del" id="btnConfirmDel">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<div class="dl-loading" id="dlLoading"><div class="dl-box"><div class="dl-spinner"></div><div class="dl-text">Menyiapkan unduhan...</div></div></div>
+<div id="downloadCard"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:5000' : window.location.origin;
+const CIRC_BIG=2*Math.PI*29,CIRC_SMALL=2*Math.PI*20;
+let allData=[],sortAsc=false,activeId=null,pendingDelId=null;
+
+const modeBtn=document.getElementById("modeBtn");
+const sunSvg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+const moonSvg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+if(localStorage.getItem("theme")==="dark"){document.body.classList.add("dark");modeBtn.innerHTML=sunSvg;}
+modeBtn.onclick=()=>{document.body.classList.toggle("dark");const d=document.body.classList.contains("dark");modeBtn.innerHTML=d?sunSvg:moonSvg;localStorage.setItem("theme",d?"dark":"light");};
+
+fetch(API_URL + "/history")
+  .then(r=>r.json())
+  .then(data=>{allData=data;removeSkel();updateStats(data);filterData();})
+  .catch(()=>{removeSkel();showToast("Gagal memuat data","t-err");document.getElementById("emptyState").style.display="block";});
+
+function removeSkel(){["sk1","sk2","sk3"].forEach(id=>{const el=document.getElementById(id);if(el)el.remove();});}
+
+function updateStats(data){
+  document.getElementById("statH").innerText=data.filter(d=>d.class_name==="healthy").length;
+  document.getElementById("statS").innerText=data.filter(d=>d.class_name!=="healthy"&&d.class_name!=="unknown").length;
+  const avg=data.length?(data.reduce((s,d)=>s+parseFloat(d.confidence),0)/data.length).toFixed(1):"–";
+  document.getElementById("statA").innerText=data.length?avg+"%":"–";
+  document.getElementById("totalBadge").innerText=data.length+" data";
+}
+
+function toggleSort(){sortAsc=!sortAsc;document.getElementById("sortBtn").innerText=sortAsc?"↑ Terlama":"↓ Terbaru";filterData();}
+
+function filterData(){
+  const q=document.getElementById("searchInput").value.toLowerCase();
+  const cls=document.getElementById("filterClass").value;
+  let f=allData.filter(d=>d.owner_name.toLowerCase().includes(q)&&(!cls||d.class_name===cls));
+  if(sortAsc)f=[...f].reverse();
+  render(f);
+}
+
+const initials=n=>n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
+const avCls=c=>["healthy","sigatoka","leafspot"].includes(c)?c:"unknown";
+const cbMap={healthy:"cb-healthy",sigatoka:"cb-sigatoka",leafspot:"cb-leafspot"};
+const cbCls=c=>cbMap[c]||"cb-unknown";
+const blMap={healthy:"Healthy",sigatoka:"Sigatoka",leafspot:"Leaf Spot"};
+const blbl=c=>blMap[c]||"Unknown";
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+function fmtDate(dt){
+  if(!dt)return"–";
+  const d=new Date(dt.includes("T")||dt.includes("Z")?dt:dt.replace(" ","T")+"Z");
+  if(isNaN(d))return dt;
+  return d.toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})+" · "+d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+}
+function fmtDateShort(dt){
+  if(!dt)return"–";
+  const d=new Date(dt.includes("T")||dt.includes("Z")?dt:dt.replace(" ","T")+"Z");
+  if(isNaN(d))return dt;
+  return d.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"})+" "+d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+}
+
+function render(data){
+  const list=document.getElementById("list"),empty=document.getElementById("emptyState");
+  if(!data.length){list.innerHTML="";empty.style.display="block";return;}
+  empty.style.display="none";list.innerHTML="";
+  data.forEach((d,i)=>{
+    const pct=Math.min(parseFloat(d.confidence)||0,100);
+    const offset=CIRC_SMALL-(pct/100)*CIRC_SMALL;
+    const ac=avCls(d.class_name);
+    const thumbHtml=d.image_url
+      ?`<img class="card-thumb" src="${esc(d.image_url)}" alt="daun" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="card-avatar av-${ac}" style="display:none">${initials(d.owner_name)}</div>`
+      :`<div class="card-avatar av-${ac}">${initials(d.owner_name)}</div>`;
+    const card=document.createElement("div");
+    card.className="history-card";
+    card.style.animationDelay=`${i*.04}s`;
+    card.innerHTML=`${thumbHtml}<div class="card-body"><div class="card-top"><span class="card-name">${esc(d.owner_name)}</span><span class="cbadge ${cbCls(d.class_name)}">${blbl(d.class_name)}</span></div><div class="card-sol">${esc(d.solution)}</div><div class="card-date">${fmtDate(d.created_at)}</div></div><div class="conf-ring"><svg width="48" height="48" viewBox="0 0 48 48"><circle class="r-bg" cx="24" cy="24" r="20"/><circle class="r-fill rf-${ac}" cx="24" cy="24" r="20" stroke-dasharray="${CIRC_SMALL.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}"/></svg><div class="ring-text">${pct}%</div></div><button class="card-del" title="Hapus">✕</button>`;
+    card.addEventListener("click",()=>openDetail(d.id));
+    card.querySelector(".card-del").addEventListener("click",e=>{e.stopPropagation();openDeleteConfirm(d.id,d.owner_name);});
+    list.appendChild(card);
+  });
+}
+
+function openDetail(id){
+  const d=allData.find(x=>x.id===id);if(!d)return;
+  activeId=id;
+  document.getElementById("dName").innerText=d.owner_name;
+  document.getElementById("dDate").innerText=fmtDate(d.created_at);
+  document.getElementById("dClass").innerText=d.class_name;
+  document.getElementById("dSol").innerText=d.solution;
+  document.getElementById("dPct").innerText=d.confidence+"%";
+  const ac=avCls(d.class_name);
+  const badge=document.getElementById("dBadge");
+  badge.className=`d-badge-float dbf-${ac}`;badge.innerText=blbl(d.class_name);
+  const fill=document.getElementById("dRingFill");
+  fill.className=`dr-fill drf-${ac}`;fill.setAttribute("stroke-dashoffset",CIRC_BIG);
+  setTimeout(()=>{const pct=Math.min(parseFloat(d.confidence)||0,100);fill.setAttribute("stroke-dashoffset",(CIRC_BIG-(pct/100)*CIRC_BIG).toFixed(2));},60);
+  const img=document.getElementById("dImg"),noImg=document.getElementById("dNoImg");
+  if(d.image_url){img.src=d.image_url;img.style.display="block";noImg.style.display="none";}
+  else{img.style.display="none";noImg.style.display="flex";}
+  showPanel("detail");
+}
+
+function closeOverlay(){document.getElementById("overlayBg").classList.remove("show");document.getElementById("detailPanel").style.display="flex";document.getElementById("confirmPanel").style.display="none";activeId=null;pendingDelId=null;}
+function showPanel(mode){document.getElementById("detailPanel").style.display=mode==="detail"?"flex":"none";document.getElementById("confirmPanel").style.display=mode==="confirm"?"block":"none";document.getElementById("overlayBg").classList.add("show");}
+
+document.getElementById("overlayBg").addEventListener("click",e=>{if(e.target===document.getElementById("overlayBg"))closeOverlay();});
+document.getElementById("dCloseBtn").addEventListener("click",closeOverlay);
+document.getElementById("dCloseBtn2").addEventListener("click",closeOverlay);
+
+function openDeleteConfirm(id,name){pendingDelId=id;document.getElementById("confirmText").innerText=`Data milik "${name}" akan dihapus permanen.`;showPanel("confirm");}
+document.getElementById("btnDetailDel").addEventListener("click",()=>{const d=allData.find(x=>x.id===activeId);if(d)openDeleteConfirm(d.id,d.owner_name);});
+document.getElementById("btnCancelDel").addEventListener("click",()=>{if(activeId!==null)showPanel("detail");else closeOverlay();pendingDelId=null;});
+document.getElementById("btnConfirmDel").addEventListener("click",async()=>{
+  if(!pendingDelId)return;const id=pendingDelId;closeOverlay();
+  try{const res=await fetch(`${API_URL}/history/${id}`,{method:"DELETE"});
+    if(res.ok){allData=allData.filter(d=>d.id!==id);updateStats(allData);filterData();showToast("Data berhasil dihapus","t-ok");}
+    else showToast("Gagal menghapus","t-err");}
+  catch{showToast("Tidak dapat terhubung","t-err");}
+});
+
+// DOWNLOAD
+document.getElementById("btnDownload").addEventListener("click",()=>{const d=allData.find(x=>x.id===activeId);if(!d)return;closeOverlay();downloadResult(d);});
+
+async function downloadResult(d){
+  const dlLoading=document.getElementById("dlLoading");dlLoading.classList.add("show");
+  const ac=avCls(d.class_name);
+  const colorMap={healthy:{bg:"#e8f5e9",accent:"#2e7d32",ring:"#4CAF50"},sigatoka:{bg:"#fff3e0",accent:"#e65100",ring:"#ff7043"},leafspot:{bg:"#fff8e1",accent:"#f57f17",ring:"#ffd54f"},unknown:{bg:"#f5f5f5",accent:"#616161",ring:"#9e9e9e"}};
+  const col=colorMap[ac]||colorMap.unknown;
+  const circ=2*Math.PI*40,pct=Math.min(parseFloat(d.confidence)||0,100),offs=circ-(pct/100)*circ;
+  const ringSvg=`<svg width="100" height="100" viewBox="0 0 100 100" style="transform:rotate(-90deg)"><circle cx="50" cy="50" r="40" fill="none" stroke="#e0e0e0" stroke-width="8"/><circle cx="50" cy="50" r="40" fill="none" stroke="${col.ring}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${circ.toFixed(2)}" stroke-dashoffset="${offs.toFixed(2)}"/></svg>`;
+  const leafSvg='<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#48a858" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75"/></svg>';
+  const leafSmall='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2a7a3a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75"/></svg>';
+  const imgSection=d.image_url?`<img src="${d.image_url}" style="width:100%;height:240px;object-fit:cover;display:block;" crossorigin="anonymous">`:`<div style="width:100%;height:160px;background:${col.bg};display:flex;align-items:center;justify-content:center;">${leafSvg}</div>`;
+  const card=document.getElementById("downloadCard");
+  card.innerHTML=`<div style="background:#fff;border-radius:18px;overflow:hidden;font-family:sans-serif;width:680px;box-shadow:0 8px 40px rgba(0,0,0,.12);">${imgSection}<div style="background:${col.accent};padding:16px 24px;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:10px;font-weight:600;letter-spacing:.12em;color:rgba(255,255,255,.75);text-transform:uppercase;margin-bottom:2px;">Banana Leaf AI · Hasil Deteksi</div><div style="font-size:20px;font-weight:700;color:white;">${esc(d.owner_name)}</div></div><div style="background:rgba(255,255,255,.2);padding:4px 14px;border-radius:50px;font-size:12px;font-weight:700;color:white;">${blbl(d.class_name)}</div></div><div style="padding:24px;background:#fff;"><div style="display:flex;align-items:center;gap:20px;margin-bottom:20px;"><div style="position:relative;width:100px;height:100px;flex-shrink:0;">${ringSvg}<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;"><span style="font-family:monospace;font-size:16px;font-weight:700;color:#1c2b18;">${pct}%</span><span style="font-size:9px;color:#6a8060;text-transform:uppercase;letter-spacing:.06em;">conf.</span></div></div><div><div style="font-size:12px;font-weight:600;color:${col.accent};letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;">Kelas Terdeteksi</div><div style="font-size:22px;font-weight:700;color:#1c2b18;text-transform:capitalize;margin-bottom:3px;">${esc(d.class_name)}</div><div style="font-size:12px;color:#6a8060;">Tingkat keyakinan model AI terhadap hasil ini.</div></div></div><div style="background:${col.bg};border-left:5px solid ${col.accent};border-radius:10px;padding:14px 18px;margin-bottom:20px;"><div style="font-size:10px;font-weight:600;color:${col.accent};letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;">Rekomendasi Solusi</div><div style="font-size:14px;color:#1c2b18;line-height:1.6;">${esc(d.solution)}</div></div><div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid #e8f0e0;"><div style="display:flex;align-items:center;gap:8px;"><div style="width:26px;height:26px;background:#eef5ee;border-radius:7px;display:flex;align-items:center;justify-content:center;">${leafSmall}</div><div><div style="font-size:12px;font-weight:700;color:#2d6a2d;">Banana Leaf AI</div><div style="font-size:9px;color:#6a8060;text-transform:uppercase;letter-spacing:.1em;">Disease Detection</div></div></div><div style="text-align:right;"><div style="font-size:10px;color:#6a8060;font-family:monospace;">${fmtDateShort(d.created_at)}</div></div></div></div></div>`;
+  if(d.image_url){const img=card.querySelector("img");await new Promise(res=>{if(img.complete)res();else{img.onload=res;img.onerror=res;}});}
+  try{
+    const canvas=await html2canvas(card.firstElementChild,{scale:2,useCORS:true,allowTaint:false,backgroundColor:null,logging:false});
+    const safe=d.owner_name.replace(/[^a-zA-Z0-9_\-]/g,"_");
+    const link=document.createElement("a");link.download=`BananaLeafAI_${safe}_${new Date().toISOString().slice(0,10)}.png`;link.href=canvas.toDataURL("image/png");link.click();
+    showToast("Berhasil diunduh!","t-ok");
+  }catch(err){console.error(err);showToast("Gagal mengunduh","t-err");}
+  dlLoading.classList.remove("show");card.innerHTML="";
+}
+
+function showToast(msg,cls="t-ok"){const t=document.getElementById("toast");t.className=`toast ${cls}`;t.innerText=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),3200);}
+</script>
+</body>
+</html>

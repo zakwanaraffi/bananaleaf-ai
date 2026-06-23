@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deteksi — Banana Leaf AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/detect.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="logo" href="/">
+    <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
+      <circle cx="18" cy="18" r="17" fill="#eef5ee" stroke="#5cb85c" stroke-width="1.5"/>
+      <path d="M18 6 C28 10 30 22 18 30 C6 22 8 10 18 6Z" fill="#5cb85c" opacity="0.85"/>
+      <path d="M18 6 L18 30" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+      <path d="M18 13 C22 13 24 16 18 18" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+      <path d="M18 20 C22 20 24 23 18 25" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+      <circle cx="26" cy="10" r="4" fill="#e8b84b"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">Banana Leaf AI</span>
+      <span class="logo-tagline">Disease Detection</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <a href="/history-page" class="nav-icon-btn" aria-label="Riwayat Deteksi">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+    </a>
+    <button id="modeBtn" class="toggle-btn" aria-label="Toggle dark mode"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+  </div>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">Deteksi Daun Pisang</h1>
+  <p class="page-sub">Upload gambar atau gunakan kamera untuk menganalisis kondisi daun.</p>
+
+  <div class="mode-switch">
+    <button id="uploadMode" class="switch-btn active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Upload</button>
+    <button id="cameraMode" class="switch-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Kamera</button>
+  </div>
+
+  <div class="upload-card">
+    <div id="uploadBox">
+      <div class="drop-area" id="dropArea">
+        <div class="drop-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--green-accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <div class="drop-text">Klik atau drag &amp; drop gambar daun</div>
+        <div class="drop-hint">JPG, PNG, WEBP · Maks 10MB</div>
+      </div>
+      <div id="previewSection" style="display:none;">
+        <div class="preview-wrap" id="previewWrap">
+          <img id="previewImg" src="" alt="preview">
+          <button class="btn-cancel-img" id="btnCancelImg" title="Hapus Foto">✕</button>
+        </div>
+        <div class="file-info">
+          <span class="file-info-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>
+          <span class="file-info-name" id="fileInfoName">—</span>
+          <span class="file-info-size" id="fileInfoSize">—</span>
+        </div>
+      </div>
+      <input type="file" id="fileInput" hidden accept="image/*">
+    </div>
+
+    <div id="cameraBox" style="display:none;">
+      <video id="video" autoplay playsinline></video>
+      <button class="btn-analyse" style="margin-top:10px;" onclick="capture()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Ambil Foto</button>
+    </div>
+
+    <button id="predictBtn" class="btn-analyse" disabled>Pilih Gambar Terlebih Dahulu</button>
+  </div>
+
+  <div class="result-card" id="result">
+    <div class="result-header">
+      <span class="result-title">Hasil Prediksi</span>
+      <button onclick="openSaveModal()" class="btn-save"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Simpan</button>
+    </div>
+    <div class="result-class-row">
+      <span class="result-class-name" id="className">—</span>
+      <span class="class-badge" id="classBadge"></span>
+    </div>
+    <div class="conf-label"><span>Confidence</span><span id="confText">—</span></div>
+    <div class="conf-track"><div class="conf-fill" id="confFill" style="width:0%"></div></div>
+    <div class="solution-box">
+      <div class="solution-label">Rekomendasi Solusi</div>
+      <div class="solution-text" id="solution">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- SAVE MODAL — bottom sheet on mobile, dialog on desktop -->
+<div class="modal-overlay" id="saveModal">
+  <div class="modal-box">
+    <div class="modal-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c6-3 10-8 10-15l-10-4-10 4c0 7 4 12 10 15z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></div>
+    <h2>Simpan Hasil</h2>
+    <p>Masukkan nama unik untuk menyimpan hasil deteksi ini ke riwayat.</p>
+    <div class="modal-input-wrap">
+      <span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+      <input type="text" class="modal-input" id="nameInput" placeholder="Nama pengguna..."
+             oninput="clearErr()" onkeydown="if(event.key==='Enter')doSave()">
+    </div>
+    <div class="modal-error" id="modalErr"><span id="errText"></span></div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeSaveModal()">Batal</button>
+      <button class="btn-modal-save" id="btnSave" onclick="doSave()">Simpan →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="loadingOverlay">
+  <div class="loader"></div>
+  <div class="loader-text">AI sedang menganalisa...</div>
+</div>
+
+<script>
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:5000' : window.location.origin;
+let lastResult=null,selectedFile=null,stream=null;
+
+const modeBtn=document.getElementById("modeBtn");
+const sunSvg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+const moonSvg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+if(localStorage.getItem("theme")==="dark"){document.body.classList.add("dark");modeBtn.innerHTML=sunSvg;}
+modeBtn.onclick=()=>{document.body.classList.toggle("dark");const d=document.body.classList.contains("dark");modeBtn.innerHTML=d?sunSvg:moonSvg;localStorage.setItem("theme",d?"dark":"light");};
+
+document.getElementById("uploadMode").onclick=()=>{
+  document.getElementById("uploadBox").style.display="block";
+  document.getElementById("cameraBox").style.display="none";
+  document.getElementById("uploadMode").classList.add("active");
+  document.getElementById("cameraMode").classList.remove("active");
+  stopCamera();
+};
+document.getElementById("cameraMode").onclick=async()=>{
+  document.getElementById("uploadBox").style.display="none";
+  document.getElementById("cameraBox").style.display="block";
+  document.getElementById("cameraMode").classList.add("active");
+  document.getElementById("uploadMode").classList.remove("active");
+  startCamera();
+};
+async function startCamera(){
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});document.getElementById("video").srcObject=stream;}
+  catch{stream=await navigator.mediaDevices.getUserMedia({video:true});document.getElementById("video").srcObject=stream;}
+  document.getElementById("predictBtn").disabled=false;
+  document.getElementById("predictBtn").innerText="Analisis Gambar";
+}
+function stopCamera(){if(stream)stream.getTracks().forEach(t=>t.stop());}
+function capture(){
+  const v=document.getElementById("video"),c=document.createElement("canvas");
+  c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d").drawImage(v,0,0);
+  c.toBlob(b=>{selectedFile=new File([b],"capture.jpg",{type:"image/jpeg"});showPreview(selectedFile,c.toDataURL("image/jpeg"));});
+}
+
+const dropArea=document.getElementById("dropArea");
+const fileInput=document.getElementById("fileInput");
+const predictBtn=document.getElementById("predictBtn");
+const overlay=document.getElementById("loadingOverlay");
+
+dropArea.onclick=()=>fileInput.click();
+dropArea.addEventListener("dragover",e=>{e.preventDefault();dropArea.classList.add("dragover");});
+dropArea.addEventListener("dragleave",()=>dropArea.classList.remove("dragover"));
+dropArea.addEventListener("drop",e=>{e.preventDefault();dropArea.classList.remove("dragover");const f=e.dataTransfer.files[0];if(f&&f.type.startsWith("image/"))processFile(f);});
+fileInput.addEventListener("change",()=>{if(fileInput.files[0])processFile(fileInput.files[0]);});
+
+function processFile(file){selectedFile=file;showPreview(file,URL.createObjectURL(file));}
+function showPreview(file,src){
+  dropArea.style.display="none";
+  document.getElementById("previewSection").style.display="block";
+  document.getElementById("previewImg").src=src;
+  document.getElementById("fileInfoName").innerText=file.name||"capture.jpg";
+  const kb=Math.round((file.size||0)/1024);
+  document.getElementById("fileInfoSize").innerText=kb>1024?(kb/1024).toFixed(1)+" MB":kb+" KB";
+  predictBtn.disabled=false;predictBtn.innerText="Analisis Gambar";
+}
+
+document.getElementById("btnCancelImg").addEventListener("click",cancelImage);
+function cancelImage(){
+  selectedFile=null;fileInput.value="";
+  dropArea.style.display="flex";
+  document.getElementById("previewSection").style.display="none";
+  document.getElementById("previewImg").src="";
+  predictBtn.disabled=true;predictBtn.innerText="Pilih Gambar Terlebih Dahulu";
+  document.getElementById("result").style.display="none";
+}
+
+predictBtn.onclick=()=>{
+  if(!selectedFile)return;
+  const fd=new FormData();fd.append("image",selectedFile);
+  overlay.style.display="flex";
+  fetch(API_URL + "/predict",{method:"POST",body:fd})
+  .then(r=>r.json()).then(data=>{lastResult=data;showResult(data);overlay.style.display="none";document.getElementById("result").scrollIntoView({behavior:"smooth"});})
+  .catch(()=>{overlay.style.display="none";showToast("Gagal terhubung ke server","error-toast");});
+};
+
+function showResult(data){
+  const res=document.getElementById("result");res.style.display="block";
+  document.getElementById("className").innerText=data.class_name;
+  document.getElementById("confText").innerText=data.confidence+"%";
+  document.getElementById("solution").innerText=data.solution;
+  const pct=Math.min(parseFloat(data.confidence)||0,100);
+  setTimeout(()=>{document.getElementById("confFill").style.width=pct+"%";},80);
+  const badge=document.getElementById("classBadge");badge.className="class-badge";
+  const cls=data.class_name;
+  if(cls==="healthy"){badge.classList.add("badge-healthy");badge.innerText="Sehat";}
+  else if(cls==="sigatoka"){badge.classList.add("badge-sigatoka");badge.innerText="Sigatoka";}
+  else if(cls==="leafspot"){badge.classList.add("badge-leafspot");badge.innerText="Leaf Spot";}
+  else{badge.classList.add("badge-unknown");badge.innerText="Unknown";}
+}
+
+function openSaveModal(){if(!lastResult)return;document.getElementById("nameInput").value="";clearErr();document.getElementById("saveModal").classList.add("show");setTimeout(()=>document.getElementById("nameInput").focus(),80);}
+function closeSaveModal(){document.getElementById("saveModal").classList.remove("show");}
+function clearErr(){document.getElementById("modalErr").classList.remove("show");document.getElementById("nameInput").classList.remove("err");}
+function showErr(msg){document.getElementById("errText").innerText=msg;document.getElementById("modalErr").classList.add("show");document.getElementById("nameInput").classList.add("err");document.getElementById("nameInput").focus();}
+
+async function doSave(){
+  const name=document.getElementById("nameInput").value.trim();
+  if(!name){showErr("Nama tidak boleh kosong.");return;}
+  const btn=document.getElementById("btnSave");btn.disabled=true;btn.innerText="Menyimpan...";
+  try{
+    const res=await fetch(API_URL + "/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({owner_name:name,class_name:lastResult.class_name,confidence:lastResult.confidence,solution:lastResult.solution,temp_image:lastResult.temp_image||""})});
+    if(res.status===409){showErr(`Username "${name}" sudah digunakan.`);}
+    else if(res.ok){closeSaveModal();showToast("Hasil berhasil disimpan!","success");}
+    else{showErr("Terjadi kesalahan. Coba lagi.");}
+  }catch{showErr("Tidak dapat terhubung ke server.");}
+  btn.disabled=false;btn.innerText="Simpan →";
+}
+
+document.getElementById("saveModal").addEventListener("click",function(e){if(e.target===this)closeSaveModal();});
+function showToast(msg,type="success"){const t=document.getElementById("toast");t.className=`toast ${type}`;t.innerText=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),3000);}
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.*
+
+# IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
+backend.log
+
+# Database (biarkan history.db tetap ada di repo sebagai db awal)
+# Tapi jangan track perubahan di dalamnya
+# backend/history.db
+
+# Upload & saved images (jangan push ke GitHub)
+backend/uploads/
+backend/saved_images/
+uploads/
+saved_images/
+
+# Temp files
+*.tmp
+*.bak
+
+# macOS
+.DS_Store
+**/.DS_Store
