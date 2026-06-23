@@ -3,8 +3,7 @@ FROM python:3.10-slim
 
 # Install system dependencies yang dibutuhkan oleh OpenCV, YOLOv8, dan wget
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     wget \
     ca-certificates \
@@ -19,27 +18,23 @@ ENV HOME=/home/user \
 # Set working directory
 WORKDIR $HOME/app
 
-# Salin requirements.txt terlebih dahulu agar Docker caching berjalan efisien
+# Install Python dependencies
 COPY --chown=user backend/requirements.txt $HOME/app/backend/requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir "numpy<2.0" && \
-    pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir -r $HOME/app/backend/requirements.txt
+    pip install --no-cache-dir "numpy<2" && \
+    pip install --no-cache-dir ultralytics flask flask-cors gunicorn Pillow opencv-python-headless
 
 # Salin semua file kode (TANPA file .pt - akan didownload di bawah)
 COPY --chown=user . $HOME/app
 
-# Download model files dari GitHub saat build
-# (File .pt tidak di-push ke HF via git, melainkan didownload langsung dari GitHub)
+# Download model files dari GitHub saat build menggunakan jsDelivr CDN
 RUN mkdir -p $HOME/app/backend/models && \
-    wget --no-check-certificate "https://cdn.jsdelivr.net/gh/zakwanaraffi/bananaleaf-ai@5403d28fb7a67cd97ace236a4de4058988946312/backend/models/best.pt" \
+    wget -q "https://cdn.jsdelivr.net/gh/zakwanaraffi/bananaleaf-ai@5403d28fb7a67cd97ace236a4de4058988946312/backend/models/best.pt" \
          -O $HOME/app/backend/models/best.pt && \
-    wget --no-check-certificate "https://cdn.jsdelivr.net/gh/zakwanaraffi/bananaleaf-ai@5403d28fb7a67cd97ace236a4de4058988946312/backend/models/yolov8n.pt" \
+    wget -q "https://cdn.jsdelivr.net/gh/zakwanaraffi/bananaleaf-ai@5403d28fb7a67cd97ace236a4de4058988946312/backend/models/yolov8n.pt" \
          -O $HOME/app/backend/models/yolov8n.pt && \
     echo "Models downloaded successfully" && \
     ls -lh $HOME/app/backend/models/
-
-# Folder uploads dan saved_images akan dibuat secara otomatis oleh Flask pada saat startup
 
 # Expose port 7860 (Hugging Face Spaces default port)
 EXPOSE 7860
