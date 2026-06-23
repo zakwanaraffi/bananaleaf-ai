@@ -35,8 +35,7 @@ RUN mkdir -p $HOME/app/backend/models && \
     echo "Models downloaded successfully" && \
     ls -lh $HOME/app/backend/models/
 
-# Pastikan folder uploads dan saved_images ada dan bisa ditulis
-RUN mkdir -p $HOME/app/backend/uploads $HOME/app/backend/saved_images
+# Folder uploads dan saved_images akan dibuat secara otomatis oleh Flask pada saat startup
 
 # Expose port 7860 (Hugging Face Spaces default port)
 EXPOSE 7860
