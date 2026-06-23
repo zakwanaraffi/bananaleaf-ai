@@ -28,9 +28,9 @@ COPY --chown=user . $HOME/app
 # Download model files dari GitHub saat build
 # (File .pt tidak di-push ke HF via git, melainkan didownload langsung dari GitHub)
 RUN mkdir -p $HOME/app/backend/models && \
-    wget -q "https://raw.githubusercontent.com/zakwanaraffi/bananaleaf-ai/main/backend/models/best.pt" \
+    wget -q "https://raw.githubusercontent.com/zakwanaraffi/bananaleaf-ai/5403d28fb7a67cd97ace236a4de4058988946312/backend/models/best.pt" \
          -O $HOME/app/backend/models/best.pt && \
-    wget -q "https://raw.githubusercontent.com/zakwanaraffi/bananaleaf-ai/main/backend/models/yolov8n.pt" \
+    wget -q "https://raw.githubusercontent.com/zakwanaraffi/bananaleaf-ai/5403d28fb7a67cd97ace236a4de4058988946312/backend/models/yolov8n.pt" \
          -O $HOME/app/backend/models/yolov8n.pt && \
     echo "Models downloaded successfully" && \
     ls -lh $HOME/app/backend/models/
